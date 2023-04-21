@@ -18,7 +18,7 @@ const int MOD=(1e9)+7;
 const int mod=998244353;
 const int dx[]={1,0,-1,0,1,1,-1,-1};
 const int dy[]={0,1,0,-1,1,-1,1,-1};
-using namespace std;
+
 namespace FFT{
   struct num{
     double x,y;
