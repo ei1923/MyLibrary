@@ -34,5 +34,6 @@ signed main(){
   lol n;
   cin >>n;
   cout <<euler_phi(n)<<'\n';
+  /*N以下の整数でNと互いに素な数*/
   return (0);
 }
