@@ -10,6 +10,28 @@
 #define all(x) x.begin(),x.end()
 using namespace std;
 using pii=pair<int,int>;
+// 再帰 auto result = makeFixPoint([&](auto f, int n) -> int {return(f(n-1)+f(n-2));}
+template <typename F>
+class
+#if defined(__has_cpp_attribute) && __has_cpp_attribute(nodiscard)
+[[nodiscard]]
+#endif  // defined(__has_cpp_attribute) && __has_cpp_attribute(nodiscard)
+FixPoint final : private F {
+public:
+  template <typename G> explicit constexpr FixPoint(G&& g) noexcept : F{std::forward<G>(g)}{}
+ 
+  template <typename... Args> constexpr decltype(auto) operator()(Args&&... args) const
+#if !defined(__GNUC__) || defined(__clang__) || __GNUC__ >= 9
+    noexcept(noexcept(F::operator()(std::declval<FixPoint>(), std::declval<Args>()...)))
+#endif  // !defined(__GNUC__) || defined(__clang__) || __GNUC__ >= 9
+  {
+    return F::operator()(*this, std::forward<Args>(args)...);
+  }
+};  // class FixPoint
+#if defined(__cpp_deduction_guides)
+template <typename F> FixPoint(F&&) -> FixPoint<std::decay_t<F>>;
+#endif  // defined(__cpp_deduction_guides)
+
 template<class T> using max_heap=priority_queue<T>;
 template<class T> using min_heap=priority_queue<T,vector<T>,greater<T>>;
 template<class T> using uset=unordered_set<T>;
