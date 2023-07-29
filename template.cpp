@@ -31,6 +31,22 @@ public:
 #if defined(__cpp_deduction_guides)
 template <typename F> FixPoint(F&&) -> FixPoint<std::decay_t<F>>;
 #endif  // defined(__cpp_deduction_guides)
+namespace
+{
+template <typename F>
+#if !defined(__has_cpp_attribute) || !__has_cpp_attribute(nodiscard)
+#  if defined(__GNUC__) && (__GNUC__ > 3 || __GNUC__ == 3 && __GNUC_MINOR__ >= 4)
+__attribute__((warn_unused_result))
+#  elif defined(_MSC_VER) && _MSC_VER >= 1700 && defined(_Check_return_)
+_Check_return_
+#  endif  // defined(__GNUC__) && (__GNUC__ > 3 || __GNUC__ == 3 && __GNUC_MINOR__ >= 4)
+#endif  // !defined(__has_cpp_attribute) || !__has_cpp_attribute(nodiscard)
+inline constexpr decltype(auto)
+makeFixPoint(F&& f) noexcept
+{
+  return FixPoint<std::decay_t<F>>{std::forward<std::decay_t<F>>(f)};
+}
+}  // namespace
 
 template<class T> using max_heap=priority_queue<T>;
 template<class T> using min_heap=priority_queue<T,vector<T>,greater<T>>;
